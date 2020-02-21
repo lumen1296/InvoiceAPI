@@ -5,14 +5,8 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import {connectionString} from './db'
 import { InversifyExpressServer } from 'inversify-express-utils'
-import { container } from '@config/inversify.config'
-
-
-// tslint:disable-next-line: no-var-requires
-require('module-alias/register')
-import '@config/ioc/loader'
-
-
+import { container } from './config/inversify.config'
+import './config/loader'
 
 const server =  new InversifyExpressServer(container, null, { rootPath: "/api" });
 

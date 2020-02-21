@@ -9,10 +9,8 @@ const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const db_1 = require("./db");
 const inversify_express_utils_1 = require("inversify-express-utils");
-const inversify_config_1 = require("@config/inversify.config");
-// tslint:disable-next-line: no-var-requires
-require('module-alias/register');
-require("@config/ioc/loader");
+const inversify_config_1 = require("./config/inversify.config");
+require("./config/loader");
 const server = new inversify_express_utils_1.InversifyExpressServer(inversify_config_1.container, null, { rootPath: "/api" });
 server.setConfig(expressApp => {
     expressApp.use(body_parser_1.default.json());

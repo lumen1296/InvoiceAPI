@@ -1,4 +1,4 @@
-import { TYPES } from '@config/types'
+import { TYPES } from '../config/types'
 import * as express from 'express'
 import { inject } from 'inversify'
 import {
@@ -10,9 +10,10 @@ import {
   response,
 } from 'inversify-express-utils'
 import joi from 'joi'
-import { ICreateInvoiceService } from '@services/ICreateInvoiceService'
+import { ICreateInvoiceService } from '../services/ICreateInvoiceService'
 import { invoiceRequestSchema } from './invoice.model'
-import { IResponse } from '@models/IResponse.model'
+import { IResponse } from '../models/IResponse.model'
+
 
 
 @controller('')
@@ -49,7 +50,9 @@ export class InvoiceAPIController implements interfaces.Controller {
         code: result.code,
         message: result.message
       }
-      res.json(httpResponse)
+      if(httpResponse.code===409) res.status(409).json(httpResponse)
+
+      res.status(201).json(httpResponse)
       nextFunc()
       return
     } catch (error) {

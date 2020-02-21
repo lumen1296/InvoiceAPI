@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("@config/types");
+const types_1 = require("../config/types");
 const express = __importStar(require("express"));
 const inversify_1 = require("inversify");
 const inversify_express_utils_1 = require("inversify-express-utils");
@@ -62,7 +62,9 @@ let InvoiceAPIController = class InvoiceAPIController {
                     code: result.code,
                     message: result.message
                 };
-                res.json(httpResponse);
+                if (httpResponse.code === 409)
+                    res.status(409).json(httpResponse);
+                res.status(201).json(httpResponse);
                 nextFunc();
                 return;
             }

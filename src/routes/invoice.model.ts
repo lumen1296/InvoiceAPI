@@ -4,8 +4,7 @@ export const invoiceRequestSchema = joi
   .object()
   .keys({
     lastName: joi.string().required(),
-    date: joi.date().required(),
     invoiceNumber: joi.number().required(),
-    net: joi.number().required(),
+    net: joi.number().precision(2).strict(),
     tax: joi.number().required(),
-    total: joi.number().required()}).required()
+    total: joi.number().precision(2).strict()}).required()

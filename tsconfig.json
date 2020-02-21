@@ -22,27 +22,6 @@
       // "jest",
       // "swagger-ui-express"
     ],
-    "paths": {
-      /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
-      "*": [
-        "node_modules/*"
-      ],
-      "~/*": [
-        "src/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@routes/*": [
-        "src/routes/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ]
-    },
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
     // "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */

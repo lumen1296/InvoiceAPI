@@ -1,22 +1,39 @@
-import { TYPES } from '@config/types'
-import { inject } from 'inversify'
+import { TYPES } from '../config/types'
 import { provide } from 'inversify-binding-decorators'
-import { ICreateInvoiceService } from '@services/ICreateInvoiceService';
-
+import { ICreateInvoiceService } from '../services/ICreateInvoiceService';
+import { invoiceModel } from '../models/invoice.schema';
+import { IResponse } from '../models/IResponse.model'
 
 @provide(TYPES.ICreateInvoiceService)
 export class CreateInvoiceService implements ICreateInvoiceService {
 
     public async createInvoice(invoice: any) {
+        let response: any
+        const invoiceM = new invoiceModel(invoice)
+        await invoiceM.save().then(() => {
+            response = {
+                data: '',
+                code: 200,
+                message: 'Invoice created',
+            }
 
-        const invoiceM = new (invoice);
-
-        invoiceM.save().then(() => {
-            return { data: [], code: 200, message: `Invoice  # ${invoiceM.invoiceNumber} created` };
         }).catch((err: { name: string; code: number; }) => {
-            if (err.name === 'MongoError' && err.code === 11000) return { data: [], code: 200, message: `Invoice already exist` };
-        });
+            if (err.name === 'MongoError' && err.code === 11000) {
+                response = {
+                    data: [],
+                    code: 409,
+                    message: 'Invoice already exist'
+                }
+            }
+            else{
+            response = {
+                data: [],
+                code: '',
+                message: err
+            }}
+        })
+
+        return response as IResponse
 
     }
-
 }

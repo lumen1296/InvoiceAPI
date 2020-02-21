@@ -15,18 +15,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("@config/types");
+const types_1 = require("../config/types");
 const inversify_binding_decorators_1 = require("inversify-binding-decorators");
+const invoice_schema_1 = require("../models/invoice.schema");
 let CreateInvoiceService = class CreateInvoiceService {
     createInvoice(invoice) {
         return __awaiter(this, void 0, void 0, function* () {
-            const invoiceM = new (invoice);
-            invoiceM.save().then(() => {
-                return { data: [], code: 200, message: `Invoice  # ${invoiceM.invoiceNumber} created` };
+            let response;
+            const invoiceM = new invoice_schema_1.invoiceModel(invoice);
+            yield invoiceM.save().then(() => {
+                response = {
+                    data: '',
+                    code: 200,
+                    message: 'Invoice created',
+                };
             }).catch((err) => {
-                if (err.name === 'MongoError' && err.code === 11000)
-                    return { data: [], code: 200, message: `Invoice already exist` };
+                if (err.name === 'MongoError' && err.code === 11000) {
+                    response = {
+                        data: [],
+                        code: 409,
+                        message: 'Invoice already exist'
+                    };
+                }
+                else {
+                    response = {
+                        data: [],
+                        code: '',
+                        message: err
+                    };
+                }
             });
+            return response;
         });
     }
 };

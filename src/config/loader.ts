@@ -1,9 +1,10 @@
-import { buildProviderModule, container } from '@config/inversify.config'
+import { container, buildProviderModule } from './inversify.config'
 
 /* REST Controllers */
-import '@routes/invoice.controller'
+import '../routes/invoice.controller'
 
 /* Services */
-import '@services/createInvoiceService'
+import '../services/createInvoiceService'
+
 
 container.load(buildProviderModule())
