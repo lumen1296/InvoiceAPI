@@ -1,8 +1,7 @@
 import { TYPES } from '@config/types'
 import { inject } from 'inversify'
 import { provide } from 'inversify-binding-decorators'
-import { ICreateInvoiceService } from './ICreateInvoiceService';
-import { Response } from '~/models/response.model'
+import { ICreateInvoiceService } from '@services/ICreateInvoiceService';
 
 
 @provide(TYPES.ICreateInvoiceService)

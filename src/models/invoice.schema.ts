@@ -23,7 +23,7 @@ export class InvoiceSchema {
     },
 
   }, {
-    collection: 'user'
+    collection: 'invoice'
   })
 
 }

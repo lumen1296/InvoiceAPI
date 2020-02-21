@@ -2,6 +2,7 @@
   "name": "invoice",
   "version": "1.0.0",
   "description": "",
+  "main": "dist/src/index.js",
   "scripts": {
     "clean": "rimraf dist/*",
     "copy-assets": "ts-node scripts/copyassets",
@@ -11,7 +12,6 @@
     "dev:start": "npm-run-all build start",
     "dev": "nodemon --watch src -e ts,ejs,json --exec npm run dev:start",
     "start": "node .",
-    "test": "jest",
     "lint-report": "node tslintReport.js"
   },
   "author": "",
@@ -31,7 +31,9 @@
     "@types/joi": "^14.3.4",
     "@types/mongodb": "^3.3.16",
     "@types/mongoose": "^5.7.1",
+    "@types/shelljs": "^0.8.6",
     "body-parser": "^1.19.0",
+    "core-util-is": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -40,7 +42,10 @@
     "inversify-express-utils": "^6.3.2",
     "joi": "^14.3.1",
     "mongoose": "^5.9.1",
-    "typescript": "^3.7.5"
+    "reflect-metadata": "^0.1.13",
+    "shelljs": "^0.8.3",
+    "typescript": "^3.7.5",
+    "webpack-dev-server": "^3.10.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",

@@ -19,8 +19,8 @@
     "types": [
       "reflect-metadata",
       "node",
-      "jest",
-      "swagger-ui-express"
+      // "jest",
+      // "swagger-ui-express"
     ],
     "paths": {
       /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
@@ -41,9 +41,6 @@
       ],
       "@services/*": [
         "src/services/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
       ]
     },
     /* Strict Type-Checking Options */
@@ -62,18 +59,8 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "scripts"
   ],
   "exclude": [
-    "**/__mocks__/*",
-    "src/services/soapClientService/__mocks__/*",
-    "src/services/evaluadorLightService/__mocks__/*",
-    "src/services/asignarMedioExpressService/__mocks__/*",
-    "src/services/coordinadorService/__mocks__/*",
-    "src/services/crearPagareDigitalService/__mocks__/*",
-    "src/services/documentoService/__mocks__/*",
-    "src/services/consultaTCVService/__mocks__/*",
-    "src/services/clienteSoap/__mocks__/*",
-    "src/services/tarjetaVigenteService/__mocks__/*"
   ]
 }

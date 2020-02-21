@@ -10,7 +10,9 @@ import {
   response,
 } from 'inversify-express-utils'
 import joi from 'joi'
-import { ICreateInvoiceService } from '~/services/ICreateInvoiceService'
+import { ICreateInvoiceService } from '@services/ICreateInvoiceService'
+import { invoiceRequestSchema } from './invoice.model'
+import { IResponse } from '@models/IResponse.model'
 
 
 @controller('')
@@ -21,17 +23,18 @@ export class InvoiceAPIController implements interfaces.Controller {
   ) {}
 
   @httpPost('/createInvoice')
-  public async asignacionMedio(
+  public async createInvoice(
     @request() req: express.Request,
     @response() res: express.Response,
     @next() nextFunc: express.NextFunction
   ) {
     const data = req.body
-    const validationResult = joi.validate(data, asignacionMedioRequestSchema)
+    const validationResult = joi.validate(data, invoiceRequestSchema)
     if (validationResult.error) {
       const httpResponse: IResponse = {
         data: '',
-        errors: ['invalid_request'],
+        code: 422,
+        message: 'invalid_request',
       }
 
       res.status(422).json(httpResponse)
@@ -40,26 +43,16 @@ export class InvoiceAPIController implements interfaces.Controller {
     }
 
     try {
-      const result = await this.coordinadorService.asignarMedio(data)
+      const result = await this.createInvoiceService.createInvoice(data)
       const httpResponse: IResponse = {
-        data: {
-          codeMessages: result.codeMessages,
-          fechaHora: result.fechaHora,
-          fechaVencimiento: result.fechaVencimiento,
-          numeroTarjetaCredito: result.numeroTarjetaCredito,
-          statusAsignacionMedio: result.statusAsignacionMedio,
-        },
-        errors: result.statusAsignacionMedio ? Array() : result.errors,
+        data: result.data,
+        code: result.code,
+        message: result.message
       }
       res.json(httpResponse)
       nextFunc()
       return
     } catch (error) {
-      this.logger.error(
-        `POST /v1/asignacionMedios - AsignacionMedioExpress error: ${JSON.stringify(
-          error
-        )}`
-      )
       res.status(500).json({ errors: ['internal_server_error'] })
       nextFunc()
       return
