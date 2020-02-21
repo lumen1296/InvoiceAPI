@@ -5,7 +5,7 @@ const invoiceSchema = new Schema({
     type: String
   },
   date: {
-    date: { type: Date, default: Date.now }
+     type: String, default: new Date() 
   },
   invoiceNumber: {
     type: Number, index: { unique: true }

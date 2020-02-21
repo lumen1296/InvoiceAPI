@@ -3,16 +3,21 @@ import * as express from 'express'
 import { inject } from 'inversify'
 import {
   controller,
+  httpGet,
   httpPost,
+  httpDelete,
   interfaces,
   next,
+  queryParam,
   request,
   response,
 } from 'inversify-express-utils'
 import joi from 'joi'
-import { ICreateInvoiceService } from '../services/ICreateInvoiceService'
+import { ICreateInvoiceService } from '../services/createInvoiceService/ICreateInvoiceService'
 import { invoiceRequestSchema } from './invoice.model'
 import { IResponse } from '../models/IResponse.model'
+import { IDeleteInvoiceService } from 'src/services/deleteInvoiceService/IDeleteInvoiceService'
+import { IGetInvoiceService } from 'src/services/getInvoiceService/IGetInvoiceService'
 
 
 
@@ -21,6 +26,10 @@ export class InvoiceAPIController implements interfaces.Controller {
   constructor(
     @inject(TYPES.ICreateInvoiceService)
     private createInvoiceService: ICreateInvoiceService,
+    @inject(TYPES.IDeleteInvoiceService)
+    private deleteInvoiceService: IDeleteInvoiceService,
+    @inject(TYPES.IGetInvoiceService)
+    private getInvoiceService: IGetInvoiceService,
   ) {}
 
   @httpPost('/createInvoice')
@@ -61,6 +70,61 @@ export class InvoiceAPIController implements interfaces.Controller {
       return
     }
   }
+
+  @httpDelete('/deleteInvoice')
+  public async deleteInvoice(
+    @response() res: express.Response,
+    @queryParam("id") id: string,
+    @next() nextFunc: express.NextFunction
+  ) {
+    try {
+      const result = await this.deleteInvoiceService.deleteInvoice(id)
+      const httpResponse: IResponse = {
+        data: result.data,
+        code: result.code,
+        message: result.message
+      }
+      if(httpResponse.code===409) res.status(409).json(httpResponse)
+
+      res.status(200).json(httpResponse)
+      nextFunc()
+      return
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ errors: ['internal_server_error'] })
+      nextFunc()
+      return
+    }
+  }
+
+
+  @httpGet('/getInvoice')
+  public async getInvoice(
+    @response() res: express.Response,
+    @queryParam("invoiceNumber") invoiceNumber: number,
+    @queryParam("startDate") startDate: string,
+    @queryParam("endDate") endDate: string,
+    @next() nextFunc: express.NextFunction
+  ) {
+    try {
+      console.log(startDate)
+      const result = await this.getInvoiceService.getInvoice(invoiceNumber, startDate, endDate)
+      const httpResponse: IResponse = {
+        data: result.data,
+        code: result.code,
+        message: result.message
+      }
+      if(httpResponse.code===409) res.status(409).json(httpResponse)
+      res.status(200).json(httpResponse)
+      nextFunc()
+      return
+    } catch (error) {
+      res.status(500).json({ errors: ['internal_server_error'] })
+      nextFunc()
+      return
+    }
+  }
+
 
 
 }

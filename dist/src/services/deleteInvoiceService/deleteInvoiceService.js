@@ -15,42 +15,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../config/types");
+const types_1 = require("../../config/types");
 const inversify_binding_decorators_1 = require("inversify-binding-decorators");
-const invoice_schema_1 = require("../models/invoice.schema");
-let CreateInvoiceService = class CreateInvoiceService {
-    createInvoice(invoice) {
+const invoice_schema_1 = require("../../models/invoice.schema");
+let DeleteInvoiceService = class DeleteInvoiceService {
+    deleteInvoice(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let response;
-            const invoiceM = new invoice_schema_1.invoiceModel(invoice);
-            yield invoiceM.save().then(() => {
+            yield invoice_schema_1.invoiceModel.findByIdAndRemove({ '_id': id }, (err, offer) => {
                 response = {
-                    data: '',
+                    data: [],
                     code: 200,
-                    message: 'Invoice created',
+                    message: 'Invoice deleted'
                 };
-            }).catch((err) => {
-                if (err.name === 'MongoError' && err.code === 11000) {
-                    response = {
-                        data: [],
-                        code: 409,
-                        message: 'Invoice already exist'
-                    };
-                }
-                else {
-                    response = {
-                        data: [],
-                        code: '',
-                        message: err
-                    };
-                }
             });
             return response;
         });
     }
 };
-CreateInvoiceService = __decorate([
-    inversify_binding_decorators_1.provide(types_1.TYPES.ICreateInvoiceService)
-], CreateInvoiceService);
-exports.CreateInvoiceService = CreateInvoiceService;
-//# sourceMappingURL=createInvoiceService.js.map
+DeleteInvoiceService = __decorate([
+    inversify_binding_decorators_1.provide(types_1.TYPES.IDeleteInvoiceService)
+], DeleteInvoiceService);
+exports.DeleteInvoiceService = DeleteInvoiceService;
+//# sourceMappingURL=deleteInvoiceService.js.map

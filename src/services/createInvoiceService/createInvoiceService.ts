@@ -1,8 +1,9 @@
-import { TYPES } from '../config/types'
+import { TYPES } from '../../config/types'
 import { provide } from 'inversify-binding-decorators'
-import { ICreateInvoiceService } from '../services/ICreateInvoiceService';
-import { invoiceModel } from '../models/invoice.schema';
-import { IResponse } from '../models/IResponse.model'
+import { ICreateInvoiceService } from './ICreateInvoiceService';
+import { invoiceModel } from '../../models/invoice.schema';
+import { IResponse } from '../../models/IResponse.model'
+
 
 @provide(TYPES.ICreateInvoiceService)
 export class CreateInvoiceService implements ICreateInvoiceService {
@@ -13,7 +14,7 @@ export class CreateInvoiceService implements ICreateInvoiceService {
         await invoiceM.save().then(() => {
             response = {
                 data: '',
-                code: 200,
+                code: 201,
                 message: 'Invoice created',
             }
 
