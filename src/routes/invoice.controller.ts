@@ -33,7 +33,7 @@ export class InvoiceAPIController implements interfaces.Controller {
     private getInvoiceService: IGetInvoiceService,
     @inject(TYPES.IListInvoiceService)
     private listInvoiceService: IListInvoiceService,
-  ) {}
+  ) { }
 
   @httpPost('/createInvoice')
   public async createInvoice(
@@ -64,7 +64,7 @@ export class InvoiceAPIController implements interfaces.Controller {
         code: result.code,
         message: result.message
       }
-      if(httpResponse.code===409) res.status(409).json(httpResponse)
+      if (httpResponse.code === 409) res.status(409).json(httpResponse)
 
       res.status(201).json(httpResponse)
       nextFunc()
@@ -83,14 +83,14 @@ export class InvoiceAPIController implements interfaces.Controller {
     @next() nextFunc: express.NextFunction
   ) {
     try {
-      console.log(id)
+
       const result = await this.deleteInvoiceService.deleteInvoice(id)
       const httpResponse: IResponse = {
         data: result.data,
         code: result.code,
         message: result.message
       }
-      if(httpResponse.code===409) res.status(409).json(httpResponse)
+      if (httpResponse.code === 409) res.status(409).json(httpResponse)
 
       res.status(200).json(httpResponse)
       nextFunc()
@@ -118,7 +118,7 @@ export class InvoiceAPIController implements interfaces.Controller {
         code: result.code,
         message: result.message
       }
-      if(httpResponse.code===409) res.status(409).json(httpResponse)
+      if (httpResponse.code === 409) res.status(409).json(httpResponse)
       res.status(200).json(httpResponse)
       nextFunc()
       return
@@ -129,25 +129,64 @@ export class InvoiceAPIController implements interfaces.Controller {
     }
   }
 
-    @httpGet('/listInvoice')
-    public async listInvoice(
-      @response() res: express.Response,
-      @next() nextFunc: express.NextFunction
-    ) {
-      try {
+  @httpGet('/listInvoice')
+  public async listInvoice(
+    @response() res: express.Response,
+    @next() nextFunc: express.NextFunction
+  ) {
+    try {
 
-        const result = await this.listInvoiceService.listInvoice()
-        const httpResponse: IResponse = {
-          data: result.data,
-          code: result.code,
-          message: result.message
-        }
-        res.status(200).json(httpResponse)
-      } catch (error) {
-        res.status(500).json({ errors: ['internal_server_error'] })
-        nextFunc()
-        return
+      const result = await this.listInvoiceService.listInvoice()
+      const httpResponse: IResponse = {
+        data: result.data,
+        code: result.code,
+        message: result.message
       }
+      res.status(200).json(httpResponse)
+      nextFunc()
+      return
+    } catch (error) {
+      res.status(500).json({ errors: ['internal_server_error'] })
+      nextFunc()
+      return
+    }
+  }
+
+  @httpGet('/getTotal')
+  public async getTotal(
+    @response() res: express.Response,
+    @next() nextFunc: express.NextFunction
+  ) {
+    try {
+      let totalNet=0.0;
+      let totalTotal=0.0;
+
+      const result = await this.listInvoiceService.listInvoice()
+
+      for(const data of result.data){
+        Math.round(data.net).toFixed(2);
+        
+        totalNet += parseFloat(data.net.toString())
+        totalTotal += parseFloat(data.total.toString())
+      }
+
+     
+
+     
+      const httpResponse: IResponse = {
+        data: {totalNet, totalTotal},
+        code: result.code,
+        message: result.message
+      }
+      res.status(200).json(httpResponse)
+      nextFunc()
+      return
+    } catch (error) {
+      res.status(500).json({ errors: ['internal_server_error'] })
+      nextFunc()
+      return
+    }
+
 
   }
 

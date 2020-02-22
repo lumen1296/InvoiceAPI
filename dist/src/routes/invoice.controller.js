@@ -83,7 +83,6 @@ let InvoiceAPIController = class InvoiceAPIController {
     deleteInvoice(res, id, nextFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(id);
                 const result = yield this.deleteInvoiceService.deleteInvoice(id);
                 const httpResponse = {
                     data: result.data,
@@ -135,6 +134,35 @@ let InvoiceAPIController = class InvoiceAPIController {
                     message: result.message
                 };
                 res.status(200).json(httpResponse);
+                nextFunc();
+                return;
+            }
+            catch (error) {
+                res.status(500).json({ errors: ['internal_server_error'] });
+                nextFunc();
+                return;
+            }
+        });
+    }
+    getTotal(res, nextFunc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let totalNet = 0.0;
+                let totalTotal = 0.0;
+                const result = yield this.listInvoiceService.listInvoice();
+                for (const data of result.data) {
+                    Math.round(data.net).toFixed(2);
+                    totalNet += parseFloat(data.net.toString());
+                    totalTotal += parseFloat(data.total.toString());
+                }
+                const httpResponse = {
+                    data: { totalNet, totalTotal },
+                    code: result.code,
+                    message: result.message
+                };
+                res.status(200).json(httpResponse);
+                nextFunc();
+                return;
             }
             catch (error) {
                 res.status(500).json({ errors: ['internal_server_error'] });
@@ -181,6 +209,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Function]),
     __metadata("design:returntype", Promise)
 ], InvoiceAPIController.prototype, "listInvoice", null);
+__decorate([
+    inversify_express_utils_1.httpGet('/getTotal'),
+    __param(0, inversify_express_utils_1.response()),
+    __param(1, inversify_express_utils_1.next()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Function]),
+    __metadata("design:returntype", Promise)
+], InvoiceAPIController.prototype, "getTotal", null);
 InvoiceAPIController = __decorate([
     inversify_express_utils_1.controller(''),
     __param(0, inversify_1.inject(types_1.TYPES.ICreateInvoiceService)),
