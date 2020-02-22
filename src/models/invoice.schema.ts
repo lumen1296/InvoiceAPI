@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose"
 
+const schemaTypes = Schema.Types;
 const invoiceSchema = new Schema({
   lastName: {
     type: String
@@ -11,13 +12,13 @@ const invoiceSchema = new Schema({
     type: Number, index: { unique: true }
   },
   net: {
-    type: Number
+    type: schemaTypes.Decimal128
   },
   tax: {
     type: Number
   },
   total: {
-    type: Number
+    type: schemaTypes.Decimal128
   },
 
 }, {

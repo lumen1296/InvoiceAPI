@@ -7,5 +7,6 @@ require("../routes/invoice.controller");
 require("../services/createInvoiceService/createInvoiceService");
 require("../services/deleteInvoiceService/deleteInvoiceService");
 require("../services/getInvoiceService/getInvoiceService");
+require("../services/listInvoiceService/listInvoiceService");
 inversify_config_1.container.load(inversify_config_1.buildProviderModule());
 //# sourceMappingURL=loader.js.map

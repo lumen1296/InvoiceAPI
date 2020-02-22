@@ -7,5 +7,6 @@ import '../routes/invoice.controller'
 import '../services/createInvoiceService/createInvoiceService'
 import '../services/deleteInvoiceService/deleteInvoiceService'
 import '../services/getInvoiceService/getInvoiceService'
+import '../services/listInvoiceService/listInvoiceService'
 
 container.load(buildProviderModule())

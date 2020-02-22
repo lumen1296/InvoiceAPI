@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const schemaTypes = mongoose_1.Schema.Types;
 const invoiceSchema = new mongoose_1.Schema({
     lastName: {
         type: String
@@ -12,13 +13,13 @@ const invoiceSchema = new mongoose_1.Schema({
         type: Number, index: { unique: true }
     },
     net: {
-        type: Number
+        type: schemaTypes.Decimal128
     },
     tax: {
         type: Number
     },
     total: {
-        type: Number
+        type: schemaTypes.Decimal128
     },
 }, {
     collection: 'invoice'

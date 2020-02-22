@@ -38,14 +38,17 @@ const inversify_express_utils_1 = require("inversify-express-utils");
 const joi_1 = __importDefault(require("joi"));
 const invoice_model_1 = require("./invoice.model");
 let InvoiceAPIController = class InvoiceAPIController {
-    constructor(createInvoiceService, deleteInvoiceService, getInvoiceService) {
+    constructor(createInvoiceService, deleteInvoiceService, getInvoiceService, listInvoiceService) {
         this.createInvoiceService = createInvoiceService;
         this.deleteInvoiceService = deleteInvoiceService;
         this.getInvoiceService = getInvoiceService;
+        this.listInvoiceService = listInvoiceService;
     }
     createInvoice(req, res, nextFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = req.body;
+            data.net = Math.round(data.net).toFixed(2);
+            data.total = Math.round(data.total).toFixed(2);
             const validationResult = joi_1.default.validate(data, invoice_model_1.invoiceRequestSchema);
             if (validationResult.error) {
                 const httpResponse = {
@@ -80,6 +83,7 @@ let InvoiceAPIController = class InvoiceAPIController {
     deleteInvoice(res, id, nextFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(id);
                 const result = yield this.deleteInvoiceService.deleteInvoice(id);
                 const httpResponse = {
                     data: result.data,
@@ -93,7 +97,6 @@ let InvoiceAPIController = class InvoiceAPIController {
                 return;
             }
             catch (error) {
-                console.log(error);
                 res.status(500).json({ errors: ['internal_server_error'] });
                 nextFunc();
                 return;
@@ -103,7 +106,6 @@ let InvoiceAPIController = class InvoiceAPIController {
     getInvoice(res, invoiceNumber, startDate, endDate, nextFunc) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(startDate);
                 const result = yield this.getInvoiceService.getInvoice(invoiceNumber, startDate, endDate);
                 const httpResponse = {
                     data: result.data,
@@ -115,6 +117,24 @@ let InvoiceAPIController = class InvoiceAPIController {
                 res.status(200).json(httpResponse);
                 nextFunc();
                 return;
+            }
+            catch (error) {
+                res.status(500).json({ errors: ['internal_server_error'] });
+                nextFunc();
+                return;
+            }
+        });
+    }
+    listInvoice(res, nextFunc) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.listInvoiceService.listInvoice();
+                const httpResponse = {
+                    data: result.data,
+                    code: result.code,
+                    message: result.message
+                };
+                res.status(200).json(httpResponse);
             }
             catch (error) {
                 res.status(500).json({ errors: ['internal_server_error'] });
@@ -153,12 +173,21 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number, String, String, Function]),
     __metadata("design:returntype", Promise)
 ], InvoiceAPIController.prototype, "getInvoice", null);
+__decorate([
+    inversify_express_utils_1.httpGet('/listInvoice'),
+    __param(0, inversify_express_utils_1.response()),
+    __param(1, inversify_express_utils_1.next()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Function]),
+    __metadata("design:returntype", Promise)
+], InvoiceAPIController.prototype, "listInvoice", null);
 InvoiceAPIController = __decorate([
     inversify_express_utils_1.controller(''),
     __param(0, inversify_1.inject(types_1.TYPES.ICreateInvoiceService)),
     __param(1, inversify_1.inject(types_1.TYPES.IDeleteInvoiceService)),
     __param(2, inversify_1.inject(types_1.TYPES.IGetInvoiceService)),
-    __metadata("design:paramtypes", [Object, Object, Object])
+    __param(3, inversify_1.inject(types_1.TYPES.IListInvoiceService)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], InvoiceAPIController);
 exports.InvoiceAPIController = InvoiceAPIController;
 //# sourceMappingURL=invoice.controller.js.map

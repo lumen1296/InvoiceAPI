@@ -18,6 +18,7 @@ import { invoiceRequestSchema } from './invoice.model'
 import { IResponse } from '../models/IResponse.model'
 import { IDeleteInvoiceService } from 'src/services/deleteInvoiceService/IDeleteInvoiceService'
 import { IGetInvoiceService } from 'src/services/getInvoiceService/IGetInvoiceService'
+import { IListInvoiceService } from 'src/services/listInvoiceService/IListInvoiceService'
 
 
 
@@ -30,6 +31,8 @@ export class InvoiceAPIController implements interfaces.Controller {
     private deleteInvoiceService: IDeleteInvoiceService,
     @inject(TYPES.IGetInvoiceService)
     private getInvoiceService: IGetInvoiceService,
+    @inject(TYPES.IListInvoiceService)
+    private listInvoiceService: IListInvoiceService,
   ) {}
 
   @httpPost('/createInvoice')
@@ -39,6 +42,8 @@ export class InvoiceAPIController implements interfaces.Controller {
     @next() nextFunc: express.NextFunction
   ) {
     const data = req.body
+    data.net = Math.round(data.net).toFixed(2);
+    data.total = Math.round(data.total).toFixed(2);
     const validationResult = joi.validate(data, invoiceRequestSchema)
     if (validationResult.error) {
       const httpResponse: IResponse = {
@@ -78,6 +83,7 @@ export class InvoiceAPIController implements interfaces.Controller {
     @next() nextFunc: express.NextFunction
   ) {
     try {
+      console.log(id)
       const result = await this.deleteInvoiceService.deleteInvoice(id)
       const httpResponse: IResponse = {
         data: result.data,
@@ -90,7 +96,6 @@ export class InvoiceAPIController implements interfaces.Controller {
       nextFunc()
       return
     } catch (error) {
-      console.log(error)
       res.status(500).json({ errors: ['internal_server_error'] })
       nextFunc()
       return
@@ -107,7 +112,6 @@ export class InvoiceAPIController implements interfaces.Controller {
     @next() nextFunc: express.NextFunction
   ) {
     try {
-      console.log(startDate)
       const result = await this.getInvoiceService.getInvoice(invoiceNumber, startDate, endDate)
       const httpResponse: IResponse = {
         data: result.data,
@@ -123,6 +127,28 @@ export class InvoiceAPIController implements interfaces.Controller {
       nextFunc()
       return
     }
+  }
+
+    @httpGet('/listInvoice')
+    public async listInvoice(
+      @response() res: express.Response,
+      @next() nextFunc: express.NextFunction
+    ) {
+      try {
+
+        const result = await this.listInvoiceService.listInvoice()
+        const httpResponse: IResponse = {
+          data: result.data,
+          code: result.code,
+          message: result.message
+        }
+        res.status(200).json(httpResponse)
+      } catch (error) {
+        res.status(500).json({ errors: ['internal_server_error'] })
+        nextFunc()
+        return
+      }
+
   }
 
 
